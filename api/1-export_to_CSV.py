@@ -1,50 +1,42 @@
 #!/usr/bin/python3
 """
 It retrieves the employee's username and their task details from the
-JSONPlaceholder API.The data is then saved in a CSV file named
-<employee_id>.csv.
+JSONPlaceholder API.The data is then saved in a CSV file.
 """
 import csv
 import requests
-from sys import argv
+import sys
 
-
-def get_employee_todos_progress(employee_id):
-    """returns info about the employee todos progress"""
-    try:
-        url = "https://jsonplaceholder.typicode.com/"
-        user_datas = requests.get(url + f"users?{employee_id}")
-        user_data = user_datas.json()
-        employee_name = user_data['username']
-
-        """Fetch todos list for employee"""
-        todos_list = requests.get(url + f"todos?userId={employee_id}")
-        json_todos_list = todos_list.json()
-
-        total_task = len(json_todos_list)
-        task_done = [task for task in json_todos_list if task['completed']]
-        no_task_done = len(task_done)
-
-        """display results"""
-        print(f"Employee {employee_name} is done with tasks("
-              f"{no_task_done}/{task_done}):")
-        
-        for task in task_done:
-            print(f"\t {task['title']}")
-
-        """Export data to csv"""
-        csv_filename = f"{employee_id}.csv"
-        with open(csv_filename, mode="w", newline='') as csv_file:
-            writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
-            for task in json_todos_list:
-                writer.writerow([employee_id, employee_name, task['completed'],
-                              task['title']])
-
-    except Exception as e:
-        print(f"an error occured: (e)")
 
 if __name__ == "__main__":
-    if len(argv) != 2:
-        print("Usage: python3 1-export_to_CSV.py<employee_id>")
-    else:
-        get_employee_todos_progress(argv[1])
+    # Base URL for the API
+    BASE_URL = 'https://jsonplaceholder.typicode.com'
+
+    # Fetch employee ID from command line argument
+    EMP_ID = sys.argv[1]
+
+    # Fetch employee details
+    employee_url = f'{BASE_URL}/users/{EMP_ID}'
+    todos_url = f'{BASE_URL}/users/{EMP_ID}/todos'
+
+    try:
+        # Fetch employee data
+        employee = requests.get(employee_url).json()
+        EMPLOYEE_NAME = employee.get("username")
+
+        # Fetch employee's TODO list
+        todos = requests.get(todos_url).json()
+
+        # Write data to CSV file
+        with open(f'{EMP_ID}.csv', mode='w', newline='') as file:
+            writer = csv.writer(file, quoting=csv.QUOTE_ALL)
+            for todo in todos:
+                writer.writerow([
+                    EMP_ID,
+                    EMPLOYEE_NAME,
+                    str(todo.get("completed")),
+                    todo.get("title")
+                ])
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data: {e}")

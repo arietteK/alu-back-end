@@ -3,36 +3,37 @@
 Using a REST API, it fetches the employee's name and tasks from the
 JSONPlaceholder API, keeps a record of the work done, and prints the progress.
 """
+
 import requests
-from sys import argv
+import sys
 
-
-def get_employee_todos_progress(employee_id):
-    """returns info about the employee todos progress"""
-    try:
-        url = "https://jsonplaceholder.typicode.com/"
-        user_datas = requests.get(url + f"users?{employee_id}")
-        user_data = user_datas.json()
-        employee_name = user_data.get("name")
-
-        """Fetch todos list for employee"""
-        todos_list = requests.get(url + f"todos?userId={employee_id}")
-        json_todos_list = todos_list.json()
-
-        total_task = len(json_todos_list)
-        task_done = [task for task in json_todos_list if task.get("completed")]
-        no_task_done = len(task_done)
-
-        """display results"""
-        print(f"Employee {employee_name} is done with tasks({no_task_done}/{task_done}):")
-
-        for task in task_done:
-            print(f"\t {task['title']}")
-    except Exception as e:
-        print(f"an error occured: (e)")
 
 if __name__ == "__main__":
-    if len(argv) != 2:
-        print("Usage: python3 0-gather_data_from_an_API.py<employee_id>")
-    else:
-        get_employee_todos_progress(argv[1])
+    # Base URL for the API
+    BASE_URL = 'https://jsonplaceholder.typicode.com'
+
+    # Fetch employee details
+    employee_id = sys.argv[1]
+    employee_url = f'{BASE_URL}/users/{employee_id}'
+    todos_url = f'{BASE_URL}/users/{employee_id}/todos'
+
+    try:
+        # Fetch employee data
+        employee = requests.get(employee_url).json()
+        EMPLOYEE_NAME = employee.get("name")
+
+        # Fetch employee's TODO list
+        todos = requests.get(todos_url).json()
+
+        # Calculate completed tasks
+        completed_tasks = [todo for todo in todos if todo.get("completed")]
+        total_tasks = len(todos)
+        completed_len = len(completed_tasks)
+
+        # Print the required output
+        print(f"Employee {EMPLOYEE_NAME} is done with tasks({completed_len}/{total_tasks}):")
+        for task in completed_tasks:
+            print(f"\t {task.get('title')}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data: {e}")

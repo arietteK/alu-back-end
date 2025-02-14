@@ -1,58 +1,53 @@
 #!/usr/bin/python3
 """
-It retrieves the employee's username and their task details from the
-JSONPlaceholder API.The data is then saved in a JSON file named
-<employee_id>.json.
+It retrieves the employee's username and their task details.
+The data is then saved in a JSON file.
 """
 import json
 import requests
-from sys import argv
+import sys
 
-
-def get_employee_todos_progress(employee_id):
-    """returns info about the employee todos progress"""
-    try:
-        url = "https://jsonplaceholder.typicode.com/"
-        user_datas = requests.get(url + f"users?{employee_id}")
-        user_data = user_datas.json()
-        employee_name = user_data['username']
-
-        """Fetch todos list for employee"""
-        todos_list = requests.get(url + f"todos?userId={employee_id}")
-        json_todos_list = todos_list.json()
-
-        total_task = len(json_todos_list)
-        task_done = [task for task in json_todos_list if task['completed']]
-        no_task_done = len(task_done)
-
-        """display results"""
-        print(f"Employee {employee_name} is done with tasks("
-              f"{no_task_done}/{task_done}):")
-        
-        for task in task_done:
-            print(f"\t {task['title']}")
-
-        """Json block"""
-        tasks = [
-            {
-                "task": task["title"]
-                "completed": task["completed"]
-                "username": employee_name
-            }
-            for task in json_todos_list
-        ]
-        new_json_data = {str(employee_id): tasks}
-
-        """exporting the data"""
-        json_filename = f"{employee_id}.json"
-        with open(json_filename, mode='w') as json_file:
-            json.dump(new_json_data, json_file, indent= 4)
-
-    except Exception as e:
-        print(f"an error occured: (e)")
 
 if __name__ == "__main__":
-    if len(argv) != 2:
-        print("Usage: python3 2-export_to_JSON.py<employee_id>")
-    else:
-        get_employee_todos_progress(argv[1])
+    # Base URL for the API
+    BASE_URL = 'https://jsonplaceholder.typicode.com'
+
+    # Fetch employee ID from command line argument
+    if len(sys.argv) < 2:
+        print("Usage: ./2-export_to_JSON.py <employee_id>")
+        sys.exit(1)
+
+    employee_id = sys.argv[1]
+
+    try:
+        # Fetch employee details
+        employee_url = f'{BASE_URL}/users/{employee_id}'
+        todos_url = f'{BASE_URL}/users/{employee_id}/todos'
+
+        employee = requests.get(employee_url).json()
+        employee_name = employee.get("username")
+
+        # Fetch employee's TODO list
+        todos = requests.get(todos_url).json()
+
+        # Prepare data for JSON export
+        tasks = [
+            {
+                "task": todo.get("title"),
+                "completed": todo.get("completed"),
+                "username": employee_name
+            }
+            for todo in todos
+        ]
+
+        output_data = {employee_id: tasks}
+
+        # Write data to JSON file
+        file_name = f"{employee_id}.json"
+        with open(file_name, 'w') as file:
+            json.dump(output_data, file, indent=4)
+
+        print(f"Tasks for employee {employee_id} exported to {file_name}.")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data: {e}")
