@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-
+"""
+Using a REST API, it fetches the employee's name and tasks from the
+JSONPlaceholder API, keeps a record of the work done, and prints the progress.
+"""
 import requests
 from sys import argv
 
@@ -30,6 +33,6 @@ def get_employee_todos_progress(employee_id):
 
 if __name__ == "__main__":
     if len(argv) != 2:
-        print("Usage: Script<employee_id>")
+        print("Usage: python3 0-gather_data_from_an_API.py<employee_id>")
     else:
         get_employee_todos_progress(argv[1])

@@ -1,5 +1,9 @@
 #!/usr/bin/python3
-
+"""
+It retrieves the employee's username and their task details from the
+JSONPlaceholder API.The data is then saved in a CSV file named
+<employee_id>.csv.
+"""
 import csv
 import requests
 from sys import argv
@@ -40,6 +44,6 @@ def get_employee_todos_progress(employee_id):
 
 if __name__ == "__main__":
     if len(argv) != 2:
-        print("Usage: Script<employee_id>")
+        print("Usage: python3 1-export_to_CSV.py<employee_id>")
     else:
         get_employee_todos_progress(argv[1])

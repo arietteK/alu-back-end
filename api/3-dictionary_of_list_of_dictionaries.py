@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-
+"""It retrieves the usernames and their task details from the
+JSONPlaceholder API.The data is then saved in a JSON file named
+`todo_all_employees.json`.
+"""
 import json
 import requests
 
@@ -12,7 +15,7 @@ def get_employee_tasks():
         
         """puting all the employee data in a dictinary"""
         all_employee_task = {}
-        
+
         for user in user_data:
             employee_id = user['id']
             employee_name = user['username']
@@ -41,6 +44,6 @@ def get_employee_tasks():
 
 if __name__ == "__main__":
     if len(argv) != 2:
-        print("Usage: Script<employee_id>")
+        print("Usage: python3 3-dictionary_of_list_of_dictionaries.py<employee_id>")
     else:
-        get_employee_todos_progress(argv[1])
+        get_employee_tasks()
