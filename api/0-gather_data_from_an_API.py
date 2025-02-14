@@ -31,8 +31,10 @@ if __name__ == "__main__":
         completed_len = len(completed_tasks)
 
         # Print the required output
-        print(f"Employee {EMPLOYEE_NAME} is done with tasks
-              ({completed_len}/{total_tasks}):")
+        print(
+            f"Employee {EMPLOYEE_NAME} is done with tasks"
+            f"({completed_len}/{total_tasks}):"
+        )
         for task in completed_tasks:
             print(f"\t {task.get('title')}")
 
