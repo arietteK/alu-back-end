@@ -10,9 +10,9 @@ def get_employee_tasks(employee_id):
     """
     Fetches tasks for a specific employee from the API.
     """
-    base_url = "https://jsonplaceholder.typicode.com"
-    user_url = f"{base_url}/users/{employee_id}"
-    todos_url = f"{base_url}/users/{employee_id}/todos"
+    BASE_URL = "https://jsonplaceholder.typicode.com"
+    user_url = f"{BASE_URL}/users/{employee_id}"
+    todos_url = f"{BASE_URL}/users/{employee_id}/todos"
 
     try:
         # Fetch employee details
@@ -63,5 +63,3 @@ if __name__ == '__main__':
     # Write data to JSON file
     with open('todo_all_employees.json', 'w') as json_file:
         json.dump(all_employees_tasks, json_file, indent=4)
-
-    print("Data exported to todo_all_employees.json")
