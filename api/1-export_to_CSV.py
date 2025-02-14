@@ -8,6 +8,7 @@ import csv
 import requests
 from sys import argv
 
+
 def get_employee_todos_progress(employee_id):
     """returns info about the employee todos progress"""
     try:
