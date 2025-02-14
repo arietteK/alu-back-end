@@ -6,6 +6,7 @@ JSONPlaceholder API.The data is then saved in a JSON file named
 import json
 import requests
 
+
 def get_employee_tasks():
     """returns info about the employee"""
     try:
